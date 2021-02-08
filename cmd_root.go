@@ -84,7 +84,16 @@ func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	result, err := strtpl.EvalWithFuncMap(string(templateContent), sprig.TxtFuncMap(), data)
+	var (
+		result string
+	)
+	switch strings.ToLower(path.Ext(env.OutputFilename)) {
+	case ".html":
+		result, err = strtpl.EvalHTMLWithFuncMap(string(templateContent), sprig.FuncMap(), data)
+	default:
+		result, err = strtpl.EvalWithFuncMap(string(templateContent), sprig.TxtFuncMap(), data)
+	}
+
 	if err != nil {
 		return []byte{}, err
 	}
