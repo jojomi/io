@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jojomi/tplfuncs"
 	"io/ioutil"
 	"os"
 	"path"
@@ -89,9 +90,11 @@ func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 	)
 	switch strings.ToLower(path.Ext(env.OutputFilename)) {
 	case ".html":
-		result, err = strtpl.EvalHTMLWithFuncMap(string(templateContent), sprig.FuncMap(), data)
+		funcMap := tplfuncs.MakeHTMLFuncMap(sprig.FuncMap(), tplfuncs.SpacingHelpersHTML(), tplfuncs.LineHelpersHTML())
+		result, err = strtpl.EvalHTMLWithFuncMap(string(templateContent), funcMap, data)
 	default:
-		result, err = strtpl.EvalWithFuncMap(string(templateContent), sprig.TxtFuncMap(), data)
+		funcMap := tplfuncs.MakeFuncMap(sprig.TxtFuncMap(), tplfuncs.SpacingHelpers(), tplfuncs.LineHelpers())
+		result, err = strtpl.EvalWithFuncMap(string(templateContent), funcMap, data)
 	}
 
 	if err != nil {
