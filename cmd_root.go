@@ -23,15 +23,15 @@ func getRootCmd() *cobra.Command {
 		Run: handleRootCmd,
 	}
 
-	f := cmd.PersistentFlags()
+	f := cmd.Flags()
 	f.StringP("input", "i", "", "input filename including extension optionally with path")
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
 	f.Bool("allow-exec", false, "allow execution of commands during templating phase")
 
-	cmd.MarkPersistentFlagRequired("input")
-	cmd.MarkPersistentFlagRequired("template")
-	cmd.MarkPersistentFlagRequired("output")
+	cmd.MarkFlagRequired("input")
+	cmd.MarkFlagRequired("template")
+	cmd.MarkFlagRequired("output")
 
 	return cmd
 }
