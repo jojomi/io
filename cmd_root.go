@@ -2,10 +2,12 @@ package main
 
 import (
 	"github.com/jojomi/tplfuncs"
+	htmlTemplate "html/template"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
+	"text/template"
 
 	"github.com/Masterminds/sprig"
 	"github.com/iancoleman/strcase"
@@ -25,6 +27,7 @@ func getRootCmd() *cobra.Command {
 	f.StringP("input", "i", "", "input filename including extension optionally with path")
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
+	f.Bool("allow-exec", false, "allow execution of commands during templating phase")
 
 	cmd.MarkPersistentFlagRequired("input")
 	cmd.MarkPersistentFlagRequired("template")
@@ -35,7 +38,10 @@ func getRootCmd() *cobra.Command {
 
 func handleRootCmd(cmd *cobra.Command, args []string) {
 	env := EnvRoot{}
-	env.ParseFrom(cmd, args)
+	err := env.ParseFrom(cmd, args)
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not parse params")
+	}
 	handleRoot(env)
 }
 
@@ -90,10 +96,26 @@ func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 	)
 	switch strings.ToLower(path.Ext(env.OutputFilename)) {
 	case ".html":
-		funcMap := tplfuncs.MakeHTMLFuncMap(sprig.FuncMap(), tplfuncs.SpacingHelpersHTML(), tplfuncs.LineHelpersHTML())
+		maps := []htmlTemplate.FuncMap{
+			sprig.FuncMap(),
+			tplfuncs.SpacingHelpersHTML(),
+			tplfuncs.LineHelpersHTML(),
+		}
+		if env.AllowExec {
+			maps = append(maps, tplfuncs.ExecHelpersHTML())
+		}
+		funcMap := tplfuncs.MakeHTMLFuncMap(maps...)
 		result, err = strtpl.EvalHTMLWithFuncMap(string(templateContent), funcMap, data)
 	default:
-		funcMap := tplfuncs.MakeFuncMap(sprig.TxtFuncMap(), tplfuncs.SpacingHelpers(), tplfuncs.LineHelpers())
+		maps := []template.FuncMap{
+			sprig.TxtFuncMap(),
+			tplfuncs.SpacingHelpers(),
+			tplfuncs.LineHelpers(),
+		}
+		if env.AllowExec {
+			maps = append(maps, tplfuncs.ExecHelpers())
+		}
+		funcMap := tplfuncs.MakeFuncMap(maps...)
 		result, err = strtpl.EvalWithFuncMap(string(templateContent), funcMap, data)
 	}
 
