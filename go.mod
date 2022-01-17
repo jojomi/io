@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jojomi/strtpl v0.4.1
-	github.com/jojomi/tplfuncs v0.3.2
+	github.com/jojomi/tplfuncs v0.3.3
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
