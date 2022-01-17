@@ -245,6 +245,8 @@ github.com/jojomi/tplfuncs v0.3.0 h1:IntT7EEy3dUfTn3jFHMyBq/LImCKLRjoBlH3SubA8HI
 github.com/jojomi/tplfuncs v0.3.0/go.mod h1:Il5kR0+G1WDuD5j8wKM2+rxdmVMg5lrH0qaCWbLQ84Q=
 github.com/jojomi/tplfuncs v0.3.1 h1:USspGknDAYwka1JhBAOpanqOvsNQtI82iSPe9/gBEJY=
 github.com/jojomi/tplfuncs v0.3.1/go.mod h1:Il5kR0+G1WDuD5j8wKM2+rxdmVMg5lrH0qaCWbLQ84Q=
+github.com/jojomi/tplfuncs v0.3.2 h1:hG0WsMJEkgQ0Ya8qWXAa2cuv9tFo9IYoJ0081iiU45E=
+github.com/jojomi/tplfuncs v0.3.2/go.mod h1:Il5kR0+G1WDuD5j8wKM2+rxdmVMg5lrH0qaCWbLQ84Q=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/json-iterator/go v1.1.11/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
