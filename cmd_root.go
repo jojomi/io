@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/jojomi/tplfuncs"
+	"github.com/juju/errors"
 	htmlTemplate "html/template"
 	"io/ioutil"
 	"os"
@@ -58,7 +59,7 @@ func handleRoot(env EnvRoot) {
 		log.Fatal().Err(err).Str("template filename", env.TemplateFilename).Msg("failed to render template")
 	}
 
-	err = writeOutputFile(env, outputData)
+	err = writeOutputFile(env, outputData, data)
 	if err != nil {
 		log.Fatal().Err(err).Str("output filename", env.OutputFilename).Msg("failed to write to output file")
 	}
@@ -98,6 +99,10 @@ func getDataFromInput(env EnvRoot) (interface{}, error) {
 	return data, nil
 }
 
+func isHTML(env EnvRoot) bool {
+	return strings.ToLower(path.Ext(env.OutputFilename)) == ".html"
+}
+
 func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 	// read template file
 	templateContent, err := ioutil.ReadFile(env.TemplateFilename)
@@ -108,28 +113,11 @@ func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 	var (
 		result string
 	)
-	switch strings.ToLower(path.Ext(env.OutputFilename)) {
-	case ".html":
-		maps := []htmlTemplate.FuncMap{
-			sprig.FuncMap(),
-			tplfuncs.SpacingHelpersHTML(),
-			tplfuncs.LineHelpersHTML(),
-		}
-		if env.AllowExec {
-			maps = append(maps, tplfuncs.ExecHelpersHTML())
-		}
-		funcMap := tplfuncs.MakeHTMLFuncMap(maps...)
+	if isHTML(env) {
+		funcMap := getHTMLFuncMap(env)
 		result, err = strtpl.EvalHTMLWithFuncMap(string(templateContent), funcMap, data)
-	default:
-		maps := []template.FuncMap{
-			sprig.TxtFuncMap(),
-			tplfuncs.SpacingHelpers(),
-			tplfuncs.LineHelpers(),
-		}
-		if env.AllowExec {
-			maps = append(maps, tplfuncs.ExecHelpers())
-		}
-		funcMap := tplfuncs.MakeFuncMap(maps...)
+	} else {
+		funcMap := getTxtFuncMap(env)
 		result, err = strtpl.EvalWithFuncMap(string(templateContent), funcMap, data)
 	}
 
@@ -139,14 +127,36 @@ func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 	return []byte(result), nil
 }
 
-func writeOutputFile(env EnvRoot, content []byte) error {
+func getHTMLFuncMap(env EnvRoot) htmlTemplate.FuncMap {
+	return tplfuncs.ToHTMLFuncMap(getTxtFuncMap(env))
+}
+
+func getTxtFuncMap(env EnvRoot) template.FuncMap {
+	maps := []template.FuncMap{
+		sprig.TxtFuncMap(),
+		tplfuncs.SpacingHelpers(),
+		tplfuncs.LineHelpers(),
+	}
+	if env.AllowExec {
+		maps = append(maps, tplfuncs.ExecHelpers())
+	}
+	return tplfuncs.MakeFuncMap(maps...)
+}
+
+func writeOutputFile(env EnvRoot, content []byte, data interface{}) error {
+	// eval template on OutputFilename
+	filename, err := strtpl.EvalWithFuncMap(env.OutputFilename, getTxtFuncMap(env), data)
+	if err != nil {
+		return errors.Annotatef(err, "could not evaluate output filename template: %s", env.OutputFilename)
+	}
+
 	// make sure the target dir exists
-	err := os.MkdirAll(path.Dir(env.OutputFilename), os.FileMode(0750))
+	err = os.MkdirAll(path.Dir(filename), os.FileMode(0750))
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(env.OutputFilename, content, os.FileMode(0640))
+	err = ioutil.WriteFile(filename, content, os.FileMode(0640))
 	if err != nil {
 		return err
 	}

@@ -69,7 +69,7 @@ func TestJSONToHTMLInline(t *testing.T) {
 	env := EnvRoot{
 		Input:            `{"creator": { "name": "John Doe", "age": 54} }`,
 		TemplateFilename: "test/template/creator.html",
-		OutputFilename:   "test/output/test.html",
+		OutputFilename:   "test/output/test-{{ .creator.age }}.html",
 	}
 	t.Cleanup(func() {
 		os.Remove(env.OutputFilename)
@@ -77,8 +77,9 @@ func TestJSONToHTMLInline(t *testing.T) {
 
 	handleRoot(env)
 
-	outputContent, err := ioutil.ReadFile(env.OutputFilename)
-	assert.FileExists(t, env.OutputFilename)
+	effectiveFilename := "test/output/test-54.html"
+	assert.FileExists(t, effectiveFilename)
+	outputContent, err := ioutil.ReadFile(effectiveFilename)
 	assert.NoError(t, err)
 	assert.Contains(t, string(outputContent), "54", "The output contains the age.")
 	assert.Contains(t, string(outputContent), "John Doe", "The output contains the name.")
