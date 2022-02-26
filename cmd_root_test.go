@@ -68,7 +68,7 @@ func TestCSVToHTML(t *testing.T) {
 func TestJSONToHTMLInline(t *testing.T) {
 	env := EnvRoot{
 		Input:            `{"creator": { "name": "John Doe", "age": 54} }`,
-		TemplateFilename: "test/template/creator.html",
+		TemplateFilename: `test/template/creat {{- if eq .creator.name "John Doe" -}} or {{- end -}} .html`,
 		OutputFilename:   "test/output/test-{{ .creator.age }}.html",
 	}
 	t.Cleanup(func() {

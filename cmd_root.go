@@ -105,7 +105,11 @@ func isHTML(env EnvRoot) bool {
 
 func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 	// read template file
-	templateContent, err := ioutil.ReadFile(env.TemplateFilename)
+	filename, err := strtpl.EvalWithFuncMap(env.TemplateFilename, getTxtFuncMap(env), data)
+	if err != nil {
+		return []byte{}, err
+	}
+	templateContent, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return []byte{}, err
 	}
