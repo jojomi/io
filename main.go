@@ -4,10 +4,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var (
-	configFilename = "config.yml"
-)
-
 func main() {
 	setupLogger()
 
