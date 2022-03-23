@@ -132,7 +132,7 @@ func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
 }
 
 func getHTMLFuncMap(env EnvRoot) htmlTemplate.FuncMap {
-	return tplfuncs.ToHTMLFuncMap(getTxtFuncMap(env))
+	return tplfuncs.MakeHTMLFuncMap(tplfuncs.ToHTMLFuncMap(getTxtFuncMap(env)), tplfuncs.HTMLSafeHelpers())
 }
 
 func getTxtFuncMap(env EnvRoot) template.FuncMap {
