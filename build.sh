@@ -10,3 +10,6 @@ GIT_REMOTE=$(git config --get remote.origin.url)
 
 # trying to be reproducible
 go install -trimpath -ldflags "-buildid= -X 'main.GitCommit=$GIT_COMMIT' -X 'main.GitBranch=$GIT_BRANCH' -X 'main.GitDate=$GIT_DATE' -X 'main.GitVersion=$GIT_VERSION' -X 'main.GitState=$GIT_STATE'  -X 'main.GitRemote=$GIT_REMOTE'"
+
+# build README for Github
+io --allow-exec --template docu/README.tpl.md --output README.md
