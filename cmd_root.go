@@ -34,7 +34,6 @@ func getRootCmd() *cobra.Command {
 
 	cmd.MarkFlagRequired("input")
 	cmd.MarkFlagRequired("template")
-	cmd.MarkFlagRequired("output")
 
 	return cmd
 }
@@ -59,6 +58,13 @@ func handleRoot(env EnvRoot) {
 		log.Fatal().Err(err).Str("template filename", env.TemplateFilename).Msg("failed to render template")
 	}
 
+	// output to stdout?
+	if env.OutputFilename == "" {
+		fmt.Println(string(outputData))
+		return
+	}
+
+	// output to file
 	err = writeOutputFile(env, outputData, data)
 	if err != nil {
 		log.Fatal().Err(err).Str("output filename", env.OutputFilename).Msg("failed to write to output file")
