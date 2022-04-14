@@ -16,8 +16,10 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/jojomi/io/input"
 	"github.com/jojomi/strtpl"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/tidwall/sjson"
 )
 
 func getRootCmd() *cobra.Command {
@@ -28,6 +30,7 @@ func getRootCmd() *cobra.Command {
 
 	f := cmd.Flags()
 	f.StringP("input", "i", "", "input filename including extension optionally with path, or inline JSON if first char is {")
+	f.StringArrayP("overwrite", "w", []string{}, "overwrite input data by path (for YML and JSON inputs only)")
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
 	f.Bool("allow-exec", false, "allow execution of commands during templating phase")
@@ -48,9 +51,37 @@ func handleRootCmd(cmd *cobra.Command, args []string) {
 }
 
 func handleRoot(env EnvRoot) {
+	var err error
+
 	data, err := getDataFromInput(env)
 	if err != nil {
 		log.Fatal().Err(err).Str("input", env.Input).Msg("failed to parse input")
+	}
+
+	// handle overwrites
+	if len(env.Overwrites) > 0 {
+		var json = jsoniter.ConfigCompatibleWithStandardLibrary
+		jsonBytes, err := json.Marshal(data)
+		if err != nil {
+			log.Fatal().Err(err).Msgf("failed to marshal to JSON for overwriting")
+		}
+		fmt.Println(data, string(jsonBytes))
+		for _, overwrite := range env.Overwrites {
+			key, value, ok := strings.Cut(overwrite, "=")
+			if !ok {
+				// invalid format, must be key=value
+				continue
+			}
+			jsonBytes, err = sjson.SetBytes(jsonBytes, key, value)
+			if err != nil {
+				log.Fatal().Err(err).Str("key", key).Str("value", value).Msgf("failed to apply overwrite %s", overwrite)
+			}
+			fmt.Println(string(jsonBytes))
+		}
+		err = json.Unmarshal(jsonBytes, &data)
+		if err != nil {
+			log.Fatal().Err(err).Str("input", env.Input).Msg("failed to reunmarshal input")
+		}
 	}
 
 	outputData, err := renderTemplate(env, data)
