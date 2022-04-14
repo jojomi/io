@@ -29,13 +29,12 @@ func getRootCmd() *cobra.Command {
 	}
 
 	f := cmd.Flags()
-	f.StringP("input", "i", "", "input filename including extension optionally with path, or inline JSON if first char is {")
+	f.StringP("input", "i", "{}", "input filename including extension optionally with path, or inline JSON if first char is {")
 	f.StringArrayP("overwrite", "w", []string{}, "overwrite input data by path (for YML and JSON inputs only)")
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
 	f.Bool("allow-exec", false, "allow execution of commands during templating phase")
 
-	cmd.MarkFlagRequired("input")
 	cmd.MarkFlagRequired("template")
 
 	return cmd
