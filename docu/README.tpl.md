@@ -23,69 +23,38 @@ can be used to create dynamic auto-generated documents.
 ## How to Use
 
 ```
-Usage:
-  io [flags]
-  io [command]
-
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  version     
-
-Flags:
-      --allow-exec              allow execution of commands during templating phase
-  -h, --help                    help for io
-  -i, --input string            input filename including extension optionally with path, or inline JSON if first char is { (default "{}")
-  -o, --output string           output filename including extension optionally with path
-  -w, --overwrite stringArray   overwrite input data by path (for YML and JSON inputs only)
-  -t, --template string         template filename including extension optionally with path
-
-Use "io [command] --help" for more information about a command.
-
+{{ exec "io --help" }}
 ```
 
 ## Example
 
-With input data from [test/input/simple.yml](test/input/simple.yml)
+{{ $input := "test/input/simple.yml" -}}
+With input data from [{{ $input }}]({{ $input }})
 
 ``` yml
-creator:
-  name: John Doe
-  age: 54
+{{ printf "cat %s" $input | exec }}
 ```
 
-and the template [test/template/creator.html](test/template/creator.html)
+{{ $template := "test/template/creator.html" -}}
+and the template [{{ $template }}]({{ $template }})
 
 ``` yml
-<h1>
-    Creator:
-    {{ .creator.name }}
-    ( {{- .creator.age }}yo)
-</h1>
+{{ printf "cat %s" $template | exec }}
 ```
 
 you can use `io` to get this result:
 
+{{ $ioCmd := printf "io -i %s -t %s" $input $template -}}
 ``` shell
-> io -i test/input/simple.yml -t test/template/creator.html
-<h1>
-    Creator:
-    John Doe
-    (54yo)
-</h1>
+> {{ $ioCmd }}
+{{ exec $ioCmd | trim }}
 ```
 
 If you want to overwrite values from the input data uses `--overwrite` like this:
+{{ $ioCmdOverwrite := printf "io --input %s --template %s --overwrite creator.age=62 --overwrite creator.name=Walther" $input $template -}}
 ``` shell
-> io --input test/input/simple.yml --template test/template/creator.html --overwrite creator.age=62 --overwrite creator.name=Walther
-map[creator:map[age:54 name:John Doe]] {"creator":{"age":54,"name":"John Doe"}}
-{"creator":{"age":"62","name":"John Doe"}}
-{"creator":{"age":"62","name":"Walther"}}
-<h1>
-    Creator:
-    Walther
-    (62yo)
-</h1>
+> {{ $ioCmdOverwrite }}
+{{ exec $ioCmdOverwrite | trim }}
 ```
 
 
@@ -100,7 +69,7 @@ A quick introduction to Golang Templates can be found at [Hugo](https://gohugo.i
 ## How to Install
 
 ``` shell
-go install github.com/jojomi/io@latest
+go install {{ regexReplaceAllLiteral "\\.git$" (exec "git config --get remote.origin.url" | trim | replace "git@" "" | replace "https://" "" | replace ":" "/" ) "" -}} @latest
 ```
 
 ## Who uses it?
