@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jojomi/strtpl v0.4.1
-	github.com/jojomi/tplfuncs v0.4.0
+	github.com/jojomi/tplfuncs v0.5.0
 	github.com/json-iterator/go v1.1.12
 	github.com/juju/errors v0.0.0-20220331221717-b38fca44723b
 	github.com/rs/zerolog v1.26.1
@@ -36,4 +36,3 @@ require (
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-

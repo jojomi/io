@@ -174,6 +174,7 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 		sprig.TxtFuncMap(),
 		tplfuncs.SpacingHelpers(),
 		tplfuncs.LineHelpers(),
+		tplfuncs.FilesystemHelpers(),
 	}
 	if env.AllowExec {
 		maps = append(maps, tplfuncs.ExecHelpers())
