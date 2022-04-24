@@ -92,10 +92,11 @@ If you want to overwrite values from the input data uses `--overwrite` like this
 Create a file named `/etc/hosts.gen`:
 
 ``` shell
-{{/*
-Update /etc/hosts ONLY like this
-sudo io --allow-exec --template /etc/hosts.gen --output /etc/hosts
-*/ -}}
+##########################################################################
+#   update /etc/hosts ONLY like this after editing                       #
+#   /etc/hosts.d/ and /etc/hosts.gen:                                    #
+#   sudo io --allow-exec --template /etc/hosts.gen --output /etc/hosts   #
+##########################################################################
 
 # Host addresses
 127.0.0.1  localhost

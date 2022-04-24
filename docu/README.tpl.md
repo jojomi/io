@@ -73,7 +73,7 @@ These files will be inlined as described in the template. The automatic comment 
 To update the hostsfile the system will use at `/etc/hosts`, run this:
 
 ``` shell
-{{ include "docu/hosts.gen" | match "sudo io" }}
+{{ regexReplaceAll "^#\\s*|\\s*#$" (include "docu/hosts.gen" | match "sudo io") "" }}
 ```
 
 Other content around the `range` operation is left untouched, but can still only be edited in `/etc/hosts.gen` otherwise it would be overwritten.
