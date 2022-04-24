@@ -78,9 +78,6 @@ you can use `io` to get this result:
 If you want to overwrite values from the input data uses `--overwrite` like this:
 ``` shell
 > io --input test/input/simple.yml --template test/template/creator.html --overwrite creator.age=62 --overwrite creator.name=Walther
-map[creator:map[age:54 name:John Doe]] {"creator":{"age":54,"name":"John Doe"}}
-{"creator":{"age":"62","name":"John Doe"}}
-{"creator":{"age":"62","name":"Walther"}}
 <h1>
     Creator:
     Walther
