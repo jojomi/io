@@ -1,0 +1,20 @@
+{{/*
+Update /etc/hosts ONLY like this
+sudo io --allow-exec --template /etc/hosts.gen --output /etc/hosts
+*/ -}}
+
+# Host addresses
+127.0.0.1  localhost
+::1        localhost ip6-localhost ip6-loopback
+ff02::1    ip6-allnodes
+ff02::2    ip6-allrouters
+
+{{- /* Loop files */}}
+{{- range glob "/etc/hosts.d/*" }}
+    {{- newline 2 -}}
+    # START {{ . }}
+    {{- newline -}}
+    {{ include . | trim }}
+    {{- newline -}}
+    # END {{ . }}
+{{- end }}

@@ -24,6 +24,11 @@ github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NH
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jojomi/strtpl v0.4.1 h1:9Y2moJBj6BexqIf9ZDggUFU1nOW4e8+0lQ7ZI4Z/kZg=
 github.com/jojomi/strtpl v0.4.1/go.mod h1:tLHtvlgYfeWM43v+kHPAYBW/V9RqHpaLWPFmxKfmBgk=
+<<<<<<< Updated upstream
+=======
+github.com/jojomi/tplfuncs v0.4.0 h1:aLpJHkO37fQGnGyQ6gk+9gen2DR/lP6tqVRE3JpbGyc=
+github.com/jojomi/tplfuncs v0.4.0/go.mod h1:Zoe4l8DtwONpdtDVdKDZlGEzIbITYp/Lcw3btWc0Zb8=
+>>>>>>> Stashed changes
 github.com/jojomi/tplfuncs v0.5.0 h1:R141KSQIWNveYUfYxDOi0X1jDEFkvhnLbIJ7lKZ/N9w=
 github.com/jojomi/tplfuncs v0.5.0/go.mod h1:Zoe4l8DtwONpdtDVdKDZlGEzIbITYp/Lcw3btWc0Zb8=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=

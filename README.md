@@ -20,6 +20,8 @@ plus a set of useful [functions](#template-functions).
 Gems are the `exec` functions from `tplfuncs` that, combined with the line based matchers and filters,
 can be used to create dynamic auto-generated documents.
 
+Also this tool can be used to setup simple and easy includes for the system Hostsfile at `/etc/hosts`, see [here](#auto-generate-etchosts).
+
 ## How to Use
 
 ```
@@ -85,6 +87,43 @@ If you want to overwrite values from the input data uses `--overwrite` like this
 </h1>
 ```
 
+### Auto-generate /etc/hosts
+
+Create a file named `/etc/hosts.gen`:
+
+``` shell
+{{/*
+Update /etc/hosts ONLY like this
+sudo io --allow-exec --template /etc/hosts.gen --output /etc/hosts
+*/ -}}
+
+# Host addresses
+127.0.0.1  localhost
+::1        localhost ip6-localhost ip6-loopback
+ff02::1    ip6-allnodes
+ff02::2    ip6-allrouters
+
+{{- /* Loop files */}}
+{{- range glob "/etc/hosts.d/*" }}
+    {{- newline 2 -}}
+    # START {{ . }}
+    {{- newline -}}
+    {{ include . | trim }}
+    {{- newline -}}
+    # END {{ . }}
+{{- end }}
+```
+
+Now you can place an arbitrary number of files in `/etc/hosts.d` (create the directly like this: `mkdir /etc/hosts`).
+These files will be inlined as described in the template. The automatic comment makes sure that you always know which source file to edit if there is anything to be changed.
+
+To update the hostsfile the system will use at `/etc/hosts`, run this:
+
+``` shell
+sudo io --allow-exec --template /etc/hosts.gen --output /etc/hosts
+```
+
+Other content around the `range` operation is left untouched, but can still only be edited in `/etc/hosts.gen` otherwise it would be overwritten.
 
 
 ## Template Functions
