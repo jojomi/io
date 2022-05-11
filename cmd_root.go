@@ -50,40 +50,9 @@ func handleRootCmd(cmd *cobra.Command, args []string) {
 }
 
 func handleRoot(env EnvRoot) {
-	var err error
-
-	data, err := getDataFromInput(env)
+	data, outputData, err := generateOutput(env)
 	if err != nil {
-		log.Fatal().Err(err).Str("input", env.Input).Msg("failed to parse input")
-	}
-
-	// handle overwrites
-	if len(env.Overwrites) > 0 {
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		jsonBytes, err := json.Marshal(data)
-		if err != nil {
-			log.Fatal().Err(err).Msgf("failed to marshal to JSON for overwriting")
-		}
-		for _, overwrite := range env.Overwrites {
-			key, value, ok := strings.Cut(overwrite, "=")
-			if !ok {
-				// invalid format, must be key=value
-				continue
-			}
-			jsonBytes, err = sjson.SetBytes(jsonBytes, key, value)
-			if err != nil {
-				log.Fatal().Err(err).Str("key", key).Str("value", value).Msgf("failed to apply overwrite %s", overwrite)
-			}
-		}
-		err = json.Unmarshal(jsonBytes, &data)
-		if err != nil {
-			log.Fatal().Err(err).Str("input", env.Input).Msg("failed to reunmarshal input")
-		}
-	}
-
-	outputData, err := renderTemplate(env, data)
-	if err != nil {
-		log.Fatal().Err(err).Str("template filename", env.TemplateFilename).Msg("failed to render template")
+		log.Fatal().Err(err).Interface("env", env).Msg("failed to run")
 	}
 
 	// output to stdout?
@@ -97,6 +66,53 @@ func handleRoot(env EnvRoot) {
 	if err != nil {
 		log.Fatal().Err(err).Str("output filename", env.OutputFilename).Msg("failed to write to output file")
 	}
+}
+
+// generateOutput generates the output content using the environment given. This is the workhorse inside io.
+func generateOutput(env EnvRoot) (interface{}, []byte, error) {
+	inputData, err := getDataFromInput(env)
+	if err != nil {
+		return nil, nil, errors.Annotatef(err, "failed to parse input %s", env.Input)
+	}
+
+	templateContent, err := getTemplateContent(env, inputData)
+	if err != nil {
+		return nil, []byte{}, err
+	}
+
+	return generateOutputForTemplate(env, inputData, templateContent)
+}
+
+func generateOutputForTemplate(env EnvRoot, inputData interface{}, templateData []byte) (interface{}, []byte, error) {
+	// handle overwrites
+	if len(env.Overwrites) > 0 {
+		var json = jsoniter.ConfigCompatibleWithStandardLibrary
+		jsonBytes, err := json.Marshal(inputData)
+		if err != nil {
+			return nil, nil, errors.Annotate(err, "failed to marshal to JSON for overwriting")
+		}
+		for _, overwrite := range env.Overwrites {
+			key, value, ok := strings.Cut(overwrite, "=")
+			if !ok {
+				// invalid format, must be key=value
+				continue
+			}
+			jsonBytes, err = sjson.SetBytes(jsonBytes, key, value)
+			if err != nil {
+				return nil, nil, errors.Annotatef(err, "failed to apply overwrite %s (key=%s, value=%s)", overwrite, key, value)
+			}
+		}
+		err = json.Unmarshal(jsonBytes, &inputData)
+		if err != nil {
+			return nil, nil, errors.Annotatef(err, "failed to re-unmarshal input %s", env.Input)
+		}
+	}
+
+	outputData, err := renderTemplate(env, inputData, templateData)
+	if err != nil {
+		return nil, nil, errors.Annotatef(err, "failed to render template %s", env.TemplateFilename)
+	}
+	return inputData, outputData, nil
 }
 
 func getDataFromInput(env EnvRoot) (interface{}, error) {
@@ -137,31 +153,31 @@ func isHTML(env EnvRoot) bool {
 	return strings.ToLower(path.Ext(env.OutputFilename)) == ".html"
 }
 
-func renderTemplate(env EnvRoot, data interface{}) ([]byte, error) {
+func getTemplateContent(env EnvRoot, data interface{}) ([]byte, error) {
 	// read template file
 	filename, err := strtpl.EvalWithFuncMap(env.TemplateFilename, getTxtFuncMap(env), data)
 	if err != nil {
 		return []byte{}, err
 	}
-	templateContent, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return []byte{}, err
-	}
+	return ioutil.ReadFile(filename)
+}
 
+func renderTemplate(env EnvRoot, data interface{}, templateData []byte) ([]byte, error) {
 	var (
 		result string
+		err    error
 	)
 	if isHTML(env) {
 		funcMap := getHTMLFuncMap(env)
-		result, err = strtpl.EvalHTMLWithFuncMap(string(templateContent), funcMap, data)
+		result, err = strtpl.EvalHTMLWithFuncMap(string(templateData), funcMap, data)
 	} else {
 		funcMap := getTxtFuncMap(env)
-		result, err = strtpl.EvalWithFuncMap(string(templateContent), funcMap, data)
+		result, err = strtpl.EvalWithFuncMap(string(templateData), funcMap, data)
 	}
-
 	if err != nil {
 		return []byte{}, err
 	}
+
 	return []byte(result), nil
 }
 
@@ -179,7 +195,26 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 	if env.AllowExec {
 		maps = append(maps, tplfuncs.ExecHelpers())
 	}
-	return tplfuncs.MakeFuncMap(maps...)
+
+	result := tplfuncs.MakeFuncMap(maps...)
+
+	// add io aware include function
+	result["includeIO"] = func(filename string) (string, error) {
+		inputData, err := getDataFromInput(env)
+		if err != nil {
+			return "", errors.Annotatef(err, "failed to parse input %s", env.Input)
+		}
+
+		templateData, err := os.ReadFile(filename)
+		if err != nil {
+			return "", errors.Annotatef(err, "failed to read include file at %s", filename)
+		}
+
+		_, out, err := generateOutputForTemplate(env, inputData, templateData)
+		return string(out), err
+	}
+
+	return result
 }
 
 func writeOutputFile(env EnvRoot, content []byte, data interface{}) error {
