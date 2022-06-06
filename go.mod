@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/iancoleman/strcase v0.2.0
-	github.com/jojomi/strtpl v0.4.1
+	github.com/jojomi/strtpl v0.4.2
 	github.com/jojomi/tplfuncs v0.5.2
 	github.com/json-iterator/go v1.1.12
 	github.com/juju/errors v0.0.0-20220331221717-b38fca44723b
