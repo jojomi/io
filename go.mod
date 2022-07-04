@@ -11,7 +11,7 @@ require (
 	github.com/juju/errors v0.0.0-20220331221717-b38fca44723b
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/cobra v1.5.0
-	github.com/stretchr/testify v1.7.5
+	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/sjson v1.2.4
 	gopkg.in/yaml.v2 v2.4.0
 )
