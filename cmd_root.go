@@ -3,14 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jojomi/tplfuncs"
-	"github.com/juju/errors"
 	htmlTemplate "html/template"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 	"text/template"
+
+	"github.com/jojomi/tplfuncs"
+	"github.com/juju/errors"
 
 	"github.com/Masterminds/sprig"
 	"github.com/iancoleman/strcase"
@@ -32,10 +33,11 @@ func getRootCmd() *cobra.Command {
 	f.StringP("input", "i", "{}", "input filename including extension optionally with path, or inline JSON if first char is {")
 	f.StringArrayP("overwrite", "w", []string{}, "overwrite input data by path (for YML and JSON inputs only)")
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
+	f.String("template-inline", "", "inline template content")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
 	f.Bool("allow-exec", false, "allow execution of commands during templating phase")
 
-	cmd.MarkFlagRequired("template")
+	cmd.MarkFlagsMutuallyExclusive("template", "template-inline")
 
 	return cmd
 }
@@ -154,12 +156,24 @@ func isHTML(env EnvRoot) bool {
 }
 
 func getTemplateContent(env EnvRoot, data interface{}) ([]byte, error) {
-	// read template file
-	filename, err := strtpl.EvalWithFuncMap(env.TemplateFilename, getTxtFuncMap(env), data)
-	if err != nil {
-		return []byte{}, err
+	// validate flags
+	if env.TemplateFilename != "" && env.TemplateInline != "" {
+		return []byte{}, fmt.Errorf("both --template and --template-inline are set, pick one")
 	}
-	return ioutil.ReadFile(filename)
+	if env.TemplateFilename == "" && env.TemplateInline == "" {
+		return []byte{}, fmt.Errorf("neither --template nor --template-inline are set, set one")
+	}
+
+	// read template file
+	if env.TemplateFilename != "" {
+		filename, err := strtpl.EvalWithFuncMap(env.TemplateFilename, getTxtFuncMap(env), data)
+		if err != nil {
+			return []byte{}, err
+		}
+		return ioutil.ReadFile(filename)
+	}
+
+	return []byte(env.TemplateInline), nil
 }
 
 func renderTemplate(env EnvRoot, data interface{}, templateData []byte) ([]byte, error) {

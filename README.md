@@ -35,12 +35,13 @@ Available Commands:
   version     
 
 Flags:
-      --allow-exec              allow execution of commands during templating phase
-  -h, --help                    help for io
-  -i, --input string            input filename including extension optionally with path, or inline JSON if first char is { (default "{}")
-  -o, --output string           output filename including extension optionally with path
-  -w, --overwrite stringArray   overwrite input data by path (for YML and JSON inputs only)
-  -t, --template string         template filename including extension optionally with path
+      --allow-exec               allow execution of commands during templating phase
+  -h, --help                     help for io
+  -i, --input string             input filename including extension optionally with path, or inline JSON if first char is { (default "{}")
+  -o, --output string            output filename including extension optionally with path
+  -w, --overwrite stringArray    overwrite input data by path (for YML and JSON inputs only)
+  -t, --template string          template filename including extension optionally with path
+      --template-inline string   inline template content
 
 Use "io [command] --help" for more information about a command.
 

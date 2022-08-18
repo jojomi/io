@@ -7,6 +7,7 @@ type EnvRoot struct {
 	Input            string
 	Overwrites       []string
 	TemplateFilename string
+	TemplateInline   string
 	OutputFilename   string
 	AllowExec        bool
 }
@@ -18,8 +19,9 @@ func (e *EnvRoot) ParseFrom(command *cobra.Command, args []string) error {
 		err error
 	)
 
-	e.Input = command.Flag("input").Value.String()
+	e.Input, err = f.GetString("input")
 	e.TemplateFilename = command.Flag("template").Value.String()
+	e.TemplateInline = command.Flag("template-inline").Value.String()
 	e.OutputFilename = command.Flag("output").Value.String()
 
 	e.Overwrites, err = f.GetStringArray("overwrite")
