@@ -36,6 +36,7 @@ Available Commands:
 
 Flags:
       --allow-exec               allow execution of commands during templating phase
+      --allow-network            allow execution of network-related functions (e.g. download) during templating phase
   -h, --help                     help for io
   -i, --input string             input filename including extension optionally with path, or inline JSON if first char is { (default "{}")
   -o, --output string            output filename including extension optionally with path

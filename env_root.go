@@ -10,6 +10,7 @@ type EnvRoot struct {
 	TemplateInline   string
 	OutputFilename   string
 	AllowExec        bool
+	AllowNetwork     bool
 }
 
 // ParseFrom reads the state from a given cobra command and its args.
@@ -29,6 +30,10 @@ func (e *EnvRoot) ParseFrom(command *cobra.Command, args []string) error {
 		return err
 	}
 	e.AllowExec, err = command.Flags().GetBool("allow-exec")
+	if err != nil {
+		return err
+	}
+	e.AllowNetwork, err = command.Flags().GetBool("allow-network")
 	if err != nil {
 		return err
 	}
