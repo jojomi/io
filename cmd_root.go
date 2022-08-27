@@ -202,6 +202,7 @@ func getHTMLFuncMap(env EnvRoot) htmlTemplate.FuncMap {
 func getTxtFuncMap(env EnvRoot) template.FuncMap {
 	maps := []template.FuncMap{
 		sprig.TxtFuncMap(),
+		tplfuncs.OutputHelpers(),
 		tplfuncs.SpacingHelpers(),
 		tplfuncs.LineHelpers(),
 		tplfuncs.FilesystemHelpers(),
