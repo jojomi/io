@@ -67,8 +67,8 @@ Create a file named `/etc/hosts.gen`:
 {{ include "docu/hosts.gen" }}
 ```
 
-Now you can place an arbitrary number of files in `/etc/hosts.d` (create the directly like this: `mkdir /etc/hosts`).
-These files will be inlined as described in the template. The automatic comment makes sure that you always know which source file to edit if there is anything to be changed.
+Now you can place an arbitrary number of files in `/etc/hosts.d` (create the directory like this: `mkdir /etc/hosts.d`).
+These files will be inlined as described in the template. The generated comment makes sure that you always know which source file to edit if there is anything to be changed.
 
 To update the hostsfile the system will use at `/etc/hosts`, run this:
 
