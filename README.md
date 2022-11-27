@@ -20,7 +20,7 @@ plus a set of useful [functions](#template-functions).
 Gems are the `exec` functions from `tplfuncs` that, combined with the line based matchers and filters,
 can be used to create dynamic auto-generated documents.
 
-Also this tool can be used to setup simple and easy includes for the system Hostsfile at `/etc/hosts`, see [here](#auto-generate-etchosts).
+Also, this tool can be used to set up simple and easy includes for the system Hostsfile at `/etc/hosts`, see [here](#auto-generate-etchosts).
 
 ## How to Use
 
@@ -35,8 +35,8 @@ Available Commands:
   version     
 
 Flags:
-      --allow-exec               allow execution of commands during templating phase
-      --allow-network            allow execution of network-related functions (e.g. download) during templating phase
+      --allow-exec               allow execution of commands during templating phase, implies --allow-io
+      --allow-io                 allow reading and writing files during templating phase
   -h, --help                     help for io
   -i, --input string             input filename including extension optionally with path, or inline JSON if first char is { (default "{}")
   -o, --output string            output filename including extension optionally with path

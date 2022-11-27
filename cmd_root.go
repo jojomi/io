@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	htmlTemplate "html/template"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -35,8 +34,8 @@ func getRootCmd() *cobra.Command {
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
 	f.String("template-inline", "", "inline template content")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
-	f.Bool("allow-exec", false, "allow execution of commands during templating phase")
-	f.Bool("allow-network", false, "allow execution of network-related functions (e.g. download) during templating phase")
+	f.Bool("allow-exec", false, "allow execution of commands during templating phase, implies --allow-io")
+	f.Bool("allow-io", false, "allow reading and writing files during templating phase")
 
 	cmd.MarkFlagsMutuallyExclusive("template", "template-inline")
 
@@ -171,7 +170,7 @@ func getTemplateContent(env EnvRoot, data interface{}) ([]byte, error) {
 		if err != nil {
 			return []byte{}, err
 		}
-		return ioutil.ReadFile(filename)
+		return os.ReadFile(filename)
 	}
 
 	return []byte(env.TemplateInline), nil
@@ -203,22 +202,30 @@ func getHTMLFuncMap(env EnvRoot) htmlTemplate.FuncMap {
 func getTxtFuncMap(env EnvRoot) template.FuncMap {
 	maps := []template.FuncMap{
 		sprig.TxtFuncMap(),
-		tplfuncs.OutputHelpers(),
+		/// tplfuncs.CastHelpers(),
 		tplfuncs.SpacingHelpers(),
+		tplfuncs.OutputHelpers(),
+		tplfuncs.ContainerHelpers(),
+		tplfuncs.StringHelpers(),
+		tplfuncs.MathHelpers(),
+		tplfuncs.JSONHelpers(),
 		tplfuncs.LineHelpers(),
+		tplfuncs.EnvHelpers(),
 		tplfuncs.FilesystemHelpers(),
+		tplfuncs.LanguageHelpers(),
+		tplfuncs.HashHelpers(),
 	}
 	if env.AllowExec {
 		maps = append(maps, tplfuncs.ExecHelpers())
 	}
-	if env.AllowNetwork {
-		maps = append(maps, tplfuncs.NetworkHelpers())
+	if env.AllowIO || env.AllowExec {
+		maps = append(maps, tplfuncs.IOHelpers())
 	}
 
 	result := tplfuncs.MakeFuncMap(maps...)
 
-	// add io aware include function
-	result["includeIO"] = func(filename string) (string, error) {
+	// io aware include function (with same data)
+	inlineTemplateFunc := func(filename string) (string, error) {
 		inputData, err := getDataFromInput(env)
 		if err != nil {
 			return "", errors.Annotatef(err, "failed to parse input %s", env.Input)
@@ -230,10 +237,64 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 		}
 
 		_, out, err := generateOutputForTemplate(env, inputData, templateData)
-		return string(out), err
+		return string(out), errors.Annotatef(err, "failed to render inlined template %s (no data)", filename)
+	}
+
+	inlineWithDataFunc := func(filename string, data ...interface{}) (string, error) {
+		inputData, err := getMapFromParams(data)
+		if err != nil {
+			return "", errors.Annotatef(err, "failed to parse input from %v", data)
+		}
+
+		templateData, err := os.ReadFile(filename)
+		if err != nil {
+			return "", errors.Annotatef(err, "failed to read include file at %s", filename)
+		}
+
+		_, out, err := generateOutputForTemplate(env, inputData, templateData)
+		return string(out), errors.Annotatef(err, "failed to render inlined template %s with data %v", filename, inputData)
+	}
+
+	result["inline"] = inlineTemplateFunc
+	result["includeIO"] = inlineTemplateFunc // for backward-compatibility only!
+
+	result["inlineIfExists"] = func(filename string) (string, error) {
+		if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
+			return "", nil
+		}
+		return inlineTemplateFunc(filename)
+	}
+
+	// TODO result["inlineRaw"] = ?
+
+	// add io aware include function (with explicitly given data)
+	result["inlineWithData"] = inlineWithDataFunc
+
+	result["inlineIfExistsWithData"] = func(filename string, data ...interface{}) (string, error) {
+		if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
+			return "", nil
+		}
+		return inlineWithDataFunc(filename, data...)
 	}
 
 	return result
+}
+
+func getMapFromParams(data []interface{}) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
+
+	var err error
+	for i := 0; i < len(data)-1; i = i + 2 {
+		if key, ok := data[i].(string); ok {
+			result[key] = data[i+1]
+			continue
+		}
+		if err == nil {
+			err = fmt.Errorf("could not parse %v for config key (needs to be string)", data[i])
+		}
+	}
+
+	return result, err
 }
 
 func writeOutputFile(env EnvRoot, content []byte, data interface{}) error {
@@ -249,7 +310,7 @@ func writeOutputFile(env EnvRoot, content []byte, data interface{}) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filename, content, os.FileMode(0640))
+	err = os.WriteFile(filename, content, os.FileMode(0640))
 	if err != nil {
 		return err
 	}

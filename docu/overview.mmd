@@ -1,8 +1,9 @@
 graph TD
-    A1["fa:fa-brackets-curly .yml string (-i)"] --> B
+    A1["fa:fa-brackets-curly YAML string (-i)"] --> B
     A2["fa:fa-file-code .yml file (-i)"] --> B
-    A3["fa:fa-file-code .json file (-i)"] --> B
-    A4["fa:fa-file-csv .csv file (-i)"] --> B
+    A3["fa:fa-brackets-curly JSON string (-i)"] --> B
+    A4["fa:fa-file-code .json file (-i)"] --> B
+    A5["fa:fa-file-csv .csv file (-i)"] --> B
     B("fa:fa-binary data") -->|"overwrites (-w)"| E("template (-t)")
     E --> H["stdout"]
     E --> F["fa:fa-file .html file (-o)"]
