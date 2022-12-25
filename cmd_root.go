@@ -215,6 +215,7 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 		tplfuncs.FilesystemHelpers(),
 		tplfuncs.LanguageHelpers(),
 		tplfuncs.HashHelpers(),
+		tplfuncs.SemverHelpers(),
 	}
 	if env.AllowExec {
 		maps = append(maps, tplfuncs.ExecHelpers())
