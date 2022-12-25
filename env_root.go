@@ -10,6 +10,7 @@ type EnvRoot struct {
 	TemplateInline   string
 	OutputFilename   string
 	AllowExec        bool
+	AllowNetwork     bool
 	AllowIO          bool
 }
 
@@ -34,6 +35,10 @@ func (e *EnvRoot) ParseFrom(command *cobra.Command, args []string) error {
 		return err
 	}
 	e.AllowIO, err = command.Flags().GetBool("allow-io")
+	if err != nil {
+		return err
+	}
+	e.AllowNetwork, err = command.Flags().GetBool("allow-network")
 	if err != nil {
 		return err
 	}

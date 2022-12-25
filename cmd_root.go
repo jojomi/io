@@ -34,8 +34,9 @@ func getRootCmd() *cobra.Command {
 	f.StringP("template", "t", "", "template filename including extension optionally with path")
 	f.String("template-inline", "", "inline template content")
 	f.StringP("output", "o", "", "output filename including extension optionally with path")
-	f.Bool("allow-exec", false, "allow execution of commands during templating phase, implies --allow-io")
+	f.Bool("allow-exec", false, "allow execution of commands during templating phase, implies --allow-io and --allow-network")
 	f.Bool("allow-io", false, "allow reading and writing files during templating phase")
+	f.Bool("allow-network", false, "allow network communication during templating phase")
 
 	cmd.MarkFlagsMutuallyExclusive("template", "template-inline")
 
@@ -220,6 +221,9 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 	}
 	if env.AllowIO || env.AllowExec {
 		maps = append(maps, tplfuncs.IOHelpers())
+	}
+	if env.AllowNetwork || env.AllowExec {
+		maps = append(maps, tplfuncs.NetworkHelpers())
 	}
 
 	result := tplfuncs.MakeFuncMap(maps...)

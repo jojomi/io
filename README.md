@@ -35,8 +35,9 @@ Available Commands:
   version     
 
 Flags:
-      --allow-exec               allow execution of commands during templating phase, implies --allow-io
+      --allow-exec               allow execution of commands during templating phase, implies --allow-io and --allow-network
       --allow-io                 allow reading and writing files during templating phase
+      --allow-network            allow network communication during templating phase
   -h, --help                     help for io
   -i, --input string             input filename including extension optionally with path, or inline JSON if first char is { (default "{}")
   -o, --output string            output filename including extension optionally with path
