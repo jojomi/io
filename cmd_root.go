@@ -204,6 +204,8 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 	maps := []template.FuncMap{
 		sprig.TxtFuncMap(),
 		tplfuncs.GolangHelpers(),
+		tplfuncs.LoopHelpers(),
+		tplfuncs.DefaultHelpers(),
 		/// tplfuncs.CastHelpers(),
 		tplfuncs.SpacingHelpers(),
 		tplfuncs.OutputHelpers(),
