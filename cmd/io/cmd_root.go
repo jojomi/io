@@ -206,6 +206,7 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 		tplfuncs.GolangHelpers(),
 		tplfuncs.LoopHelpers(),
 		tplfuncs.DefaultHelpers(),
+		tplfuncs.DateHelpers(),
 		/// tplfuncs.CastHelpers(),
 		tplfuncs.SpacingHelpers(),
 		tplfuncs.OutputHelpers(),
@@ -217,8 +218,10 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 		tplfuncs.EnvHelpers(),
 		tplfuncs.FilesystemHelpers(),
 		tplfuncs.LanguageHelpers(),
+		tplfuncs.RandomHelpers(),
 		tplfuncs.HashHelpers(),
 		tplfuncs.SemverHelpers(),
+		tplfuncs.YAMLHelpers(),
 	}
 	if env.AllowExec {
 		maps = append(maps, tplfuncs.ExecHelpers())
@@ -249,9 +252,18 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 	}
 
 	inlineWithDataFunc := func(filename string, data ...interface{}) (string, error) {
-		inputData, err := getMapFromParams(data)
-		if err != nil {
-			return "", errors.Annotatef(err, "failed to parse input from %v", data)
+		var (
+			inputData interface{}
+			err       error
+		)
+
+		if len(data) == 1 {
+			inputData = data[0]
+		} else {
+			inputData, err = getMapFromParams(data)
+			if err != nil {
+				return "", errors.Annotatef(err, "failed to parse input from %v", data)
+			}
 		}
 
 		templateData, err := os.ReadFile(filename)
