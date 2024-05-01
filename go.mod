@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/jojomi/strtpl v0.4.4
-	github.com/jojomi/tplfuncs v0.11.0
+	github.com/jojomi/tplfuncs v0.12.0
 	github.com/json-iterator/go v1.1.12
 	github.com/juju/errors v1.0.0
 	github.com/rs/zerolog v1.32.0

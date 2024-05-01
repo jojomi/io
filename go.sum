@@ -43,8 +43,8 @@ github.com/jojomi/gorun v0.0.0-20240321022359-dc1dd00914be h1:1Oqn29muLSQhhhzfJ2
 github.com/jojomi/gorun v0.0.0-20240321022359-dc1dd00914be/go.mod h1:1+tve56HJAbex5kzT7dxAu4mzbSWiy6Xrfc3m0TYvEU=
 github.com/jojomi/strtpl v0.4.4 h1:Cu2tbmRleabxNcYaUUhnombfPZy+A4WEQ4LjiZJeYlg=
 github.com/jojomi/strtpl v0.4.4/go.mod h1:lZtlkKR4eF0/IO4ScBHoyc8231nbH7NVOsXgMAilKmQ=
-github.com/jojomi/tplfuncs v0.11.0 h1:sILgaiXrufnGkw9YbC/5gmg84NDQioLTVT8b22wyhvo=
-github.com/jojomi/tplfuncs v0.11.0/go.mod h1:ygiI1R3KPV18k9UVUiL6ZflI4Q8Uw+qkOWgHyKllc4k=
+github.com/jojomi/tplfuncs v0.12.0 h1:qqk5ySVHV7ZslL+j/jjYGXw4HYSoyGrqhNrpgXZrZ1I=
+github.com/jojomi/tplfuncs v0.12.0/go.mod h1:ygiI1R3KPV18k9UVUiL6ZflI4Q8Uw+qkOWgHyKllc4k=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/juju/errors v1.0.0 h1:yiq7kjCLll1BiaRuNY53MGI0+EQ3rF6GB+wvboZDefM=
