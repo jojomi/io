@@ -89,8 +89,8 @@ func generateOutput(env EnvRoot) (interface{}, []byte, error) {
 func generateOutputForTemplate(env EnvRoot, inputData interface{}, templateData []byte) (interface{}, []byte, error) {
 	// handle overwrites
 	if len(env.Overwrites) > 0 {
-		var json = jsoniter.ConfigCompatibleWithStandardLibrary
-		jsonBytes, err := json.Marshal(inputData)
+		var jsonEncoder = jsoniter.ConfigCompatibleWithStandardLibrary
+		jsonBytes, err := jsonEncoder.Marshal(inputData)
 		if err != nil {
 			return nil, nil, errors.Annotate(err, "failed to marshal to JSON for overwriting")
 		}
@@ -207,14 +207,14 @@ func getTxtFuncMap(env EnvRoot) template.FuncMap {
 		tplfuncs.LoopHelpers(),
 		tplfuncs.DefaultHelpers(),
 		tplfuncs.DateHelpers(),
-		/// tplfuncs.CastHelpers(),
+		tplfuncs.CastHelpers(),
 		tplfuncs.SpacingHelpers(),
-		tplfuncs.OutputHelpers(),
+		tplfuncs.PrintHelpers(),
 		tplfuncs.ContainerHelpers(),
 		tplfuncs.StringHelpers(),
 		tplfuncs.MathHelpers(),
 		tplfuncs.JSONHelpers(),
-		tplfuncs.LineHelpers(),
+		tplfuncs.LinesHelpers(),
 		tplfuncs.EnvHelpers(),
 		tplfuncs.FilesystemHelpers(),
 		tplfuncs.LanguageHelpers(),
