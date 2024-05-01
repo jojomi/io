@@ -21,13 +21,9 @@ import (
 )
 
 func RenderFile(opts IOOpts) error {
-	outputData, err := RenderString(opts)
+	data, outputData, err := generateOutput(opts)
 	if err != nil {
-		return err
-	}
-
-	if opts.OutputFilename == "" {
-		return errors.New("opts.OutputFilename not set, cannot RenderFile")
+		log.Fatal().Err(err).Interface("opts", opts).Interface("data", data).Msg("failed to run")
 	}
 
 	// output to file
@@ -42,12 +38,13 @@ func RenderFile(opts IOOpts) error {
 func RenderString(opts IOOpts) (string, error) {
 	data, outputData, err := generateOutput(opts)
 	if err != nil {
-		log.Fatal().Err(err).Interface("opts", opts).Msg("failed to run")
+		log.Fatal().Err(err).Interface("opts", opts).Interface("data", data).Msg("failed to run")
 	}
-
+	return string(outputData), err
 }
 
 // generateOutput generates the output content using the environment given. This is the workhorse inside io.
+// It returns the inputData used and the template output bytes plus the error if one occurred.
 func generateOutput(opts IOOpts) (interface{}, []byte, error) {
 	inputData, err := getDataFromInput(opts)
 	if err != nil {
@@ -192,8 +189,6 @@ func getTxtFuncMap(opts IOOpts) template.FuncMap {
 		tplfuncs.MathHelpers(),
 		tplfuncs.JSONHelpers(),
 		tplfuncs.LinesHelpers(),
-		tplfuncs.EnvHelpers(),
-		tplfuncs.FilesystemHelpers(),
 		tplfuncs.LanguageHelpers(),
 		tplfuncs.RandomHelpers(),
 		tplfuncs.HashHelpers(),
@@ -204,7 +199,7 @@ func getTxtFuncMap(opts IOOpts) template.FuncMap {
 		maps = append(maps, tplfuncs.ExecHelpers())
 	}
 	if opts.AllowIO || opts.AllowExec {
-		maps = append(maps, tplfuncs.IOHelpers())
+		maps = append(maps, tplfuncs.IOHelpers(), tplfuncs.EnvHelpers(), tplfuncs.FilesystemHelpers())
 	}
 	if opts.AllowNetwork || opts.AllowExec {
 		maps = append(maps, tplfuncs.NetworkHelpers())
@@ -295,6 +290,12 @@ func getMapFromParams(data []interface{}) (map[string]interface{}, error) {
 }
 
 func writeOutputFile(opts IOOpts, content []byte, data interface{}) error {
+	// no filename given -> stdout!
+	if opts.OutputFilename == "" {
+		fmt.Println(string(content))
+		return nil
+	}
+
 	// eval template on OutputFilename
 	filename, err := strtpl.EvalWithFuncMap(opts.OutputFilename, getTxtFuncMap(opts), data)
 	if err != nil {

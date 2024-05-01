@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -20,7 +19,7 @@ func TestYamlToHTML(t *testing.T) {
 
 	handleRoot(env)
 
-	outputContent, err := ioutil.ReadFile(env.OutputFilename)
+	outputContent, err := os.ReadFile(env.OutputFilename)
 	assert.FileExists(t, env.OutputFilename)
 	assert.NoError(t, err)
 	assert.Contains(t, string(outputContent), "54", "The output contains the age.")
@@ -39,7 +38,7 @@ func TestJSONToHTML(t *testing.T) {
 
 	handleRoot(env)
 
-	outputContent, err := ioutil.ReadFile(env.OutputFilename)
+	outputContent, err := os.ReadFile(env.OutputFilename)
 	assert.FileExists(t, env.OutputFilename)
 	assert.NoError(t, err)
 	assert.Contains(t, string(outputContent), "54", "The output contains the age.")
@@ -58,7 +57,7 @@ func TestCSVToHTML(t *testing.T) {
 
 	handleRoot(env)
 
-	outputContent, err := ioutil.ReadFile(env.OutputFilename)
+	outputContent, err := os.ReadFile(env.OutputFilename)
 	assert.FileExists(t, env.OutputFilename)
 	assert.NoError(t, err)
 	assert.Contains(t, string(outputContent), "54", "The output contains the age.")
@@ -79,7 +78,7 @@ func TestJSONToHTMLInline(t *testing.T) {
 
 	effectiveFilename := "test/output/test-54.html"
 	assert.FileExists(t, effectiveFilename)
-	outputContent, err := ioutil.ReadFile(effectiveFilename)
+	outputContent, err := os.ReadFile(effectiveFilename)
 	assert.NoError(t, err)
 	assert.Contains(t, string(outputContent), "54", "The output contains the age.")
 	assert.Contains(t, string(outputContent), "John Doe", "The output contains the name.")
