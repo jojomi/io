@@ -41,6 +41,8 @@ github.com/jojomi/tplfuncs v0.13.2 h1:t9LnVUs/DWjdS9pp6FAn94HkfTImD99lWobMKfP1w5
 github.com/jojomi/tplfuncs v0.13.2/go.mod h1:rwUE7ETvaXJRzKDTSHY4ng00xdakGGWiZyxsTGdQw4Q=
 github.com/jojomi/tplfuncs v0.14.0 h1:EFoBGsi6SQLODC1miLcoMok6TKIO7Q6qon03lcA2cFs=
 github.com/jojomi/tplfuncs v0.14.0/go.mod h1:rwUE7ETvaXJRzKDTSHY4ng00xdakGGWiZyxsTGdQw4Q=
+github.com/jojomi/tplfuncs v0.15.0 h1:ipDIU8SKxX/aaHBNZJ3FKd33G+FluueEevYayHiCtec=
+github.com/jojomi/tplfuncs v0.15.0/go.mod h1:rwUE7ETvaXJRzKDTSHY4ng00xdakGGWiZyxsTGdQw4Q=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/juju/errors v1.0.0 h1:yiq7kjCLll1BiaRuNY53MGI0+EQ3rF6GB+wvboZDefM=

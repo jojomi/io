@@ -196,13 +196,24 @@ func getTxtFuncMap(opts IOOpts) template.FuncMap {
 		tplfuncs.YAMLHelpers(),
 	}
 	if opts.AllowExec {
-		maps = append(maps, tplfuncs.ExecHelpers(), tplfuncs.Exec2Helpers())
+		maps = append(
+			maps,
+			tplfuncs.ExecHelpers(),
+		)
 	}
 	if opts.AllowIO || opts.AllowExec {
-		maps = append(maps, tplfuncs.IOHelpers(), tplfuncs.EnvHelpers(), tplfuncs.FilesystemHelpers(), tplfuncs.Filesystem2Helpers())
+		maps = append(
+			maps,
+			tplfuncs.IOHelpers(),
+			tplfuncs.EnvHelpers(),
+			tplfuncs.FilesystemHelpers(),
+		)
 	}
 	if opts.AllowNetwork || opts.AllowExec {
-		maps = append(maps, tplfuncs.NetworkHelpers())
+		maps = append(
+			maps,
+			tplfuncs.NetworkHelpers(),
+		)
 	}
 
 	result := tplfuncs.MakeFuncMap(maps...)

@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/jojomi/strtpl v0.4.4
-	github.com/jojomi/tplfuncs v0.14.0
+	github.com/jojomi/tplfuncs v0.15.0
 	github.com/json-iterator/go v1.1.12
 	github.com/juju/errors v1.0.0
 	github.com/rs/zerolog v1.33.0
