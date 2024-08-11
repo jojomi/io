@@ -12,7 +12,6 @@ import (
 	"github.com/jojomi/tplfuncs"
 	"github.com/juju/errors"
 
-	"github.com/Masterminds/sprig"
 	"github.com/jojomi/io/input"
 	"github.com/jojomi/strtpl"
 	jsoniter "github.com/json-iterator/go"
@@ -175,7 +174,6 @@ func getHTMLFuncMap(opts IOOpts) htmlTemplate.FuncMap {
 
 func getTxtFuncMap(opts IOOpts) template.FuncMap {
 	maps := []template.FuncMap{
-		sprig.TxtFuncMap(),
 		tplfuncs.GolangHelpers(),
 		tplfuncs.LoopHelpers(),
 		tplfuncs.DefaultHelpers(),

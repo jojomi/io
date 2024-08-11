@@ -132,8 +132,7 @@ Other content around the `range` operation is left untouched, but can still only
 
 ## Template Functions
 
-* all functions defined in [Masterminds/**sprig**](http://masterminds.github.io/sprig/)
-* all functions defined in [jojomi/**tplfuncs**](https://github.com/jojomi/tplfuncs) (the `exec*` variants are only avaiable when `--allow-exec` is given when calling `io` due to security implications)
+All functions defined in [jojomi/**tplfuncs**](https://github.com/jojomi/tplfuncs) (the `exec*` variants are only avaiable when `--allow-exec` is given when calling `io` due to security implications)
 
 A quick introduction to Golang Templates can be found at [Hugo](https://gohugo.io/templates/introduction).
 
