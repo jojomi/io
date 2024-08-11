@@ -192,6 +192,7 @@ func getTxtFuncMap(opts IOOpts) template.FuncMap {
 		tplfuncs.SemverHelpers(),
 		tplfuncs.SpacingHelpers(),
 		tplfuncs.StringHelpers(),
+		tplfuncs.TypeConversionHelpers(),
 		tplfuncs.YAMLHelpers(),
 	}
 	if opts.AllowExec {
