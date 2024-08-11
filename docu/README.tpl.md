@@ -73,7 +73,7 @@ These files will be inlined as described in the template. The generated comment 
 To update the hostsfile the system will use at `/etc/hosts`, run this:
 
 ``` shell
-{{ regexReplaceAll "^#\\s*|\\s*#$" (include "docu/hosts.gen" | match "sudo io") "" }}
+{{ regexpReplaceLiteral "(^\\s*#\\s*)|(\\s*#\\s*$)" "" (include "docu/hosts.gen" | match "sudo io") }}
 ```
 
 Other content around the `range` operation is left untouched, but can still only be edited in `/etc/hosts.gen` otherwise it would be overwritten.
@@ -81,15 +81,24 @@ Other content around the `range` operation is left untouched, but can still only
 
 ## Template Functions
 
-* all functions defined in [Masterminds/**sprig**](http://masterminds.github.io/sprig/)
-* all functions defined in [jojomi/**tplfuncs**](https://github.com/jojomi/tplfuncs) (the `exec*` variants are only avaiable when `--allow-exec` is given when calling `io` due to security implications)
+All functions defined in [jojomi/**tplfuncs**](https://github.com/jojomi/tplfuncs) (the `exec*` variants are only avaiable when `--allow-exec` is given when calling `io` due to security implications)
 
 A quick introduction to Golang Templates can be found at [Hugo](https://gohugo.io/templates/introduction).
 
 ## How to Install
 
+{{ $base := (exec "git config --get remote.origin.url" | trim | replace "git@" "" | replace "https://" "" | replace ".git" "" | replace ":" "/" ) -}}
+
+### `io` Command
+
 ``` shell
-go install {{ regexReplaceAllLiteral "\\.git$" (exec "git config --get remote.origin.url" | trim | replace "git@" "" | replace "https://" "" | replace ":" "/" ) "" -}} @latest
+go install {{ $base }}/cmd/io@latest
+```
+
+### `github.com/jojomi/io` Library
+
+``` shell
+go get -u {{ $base }}
 ```
 
 ## Who uses it?

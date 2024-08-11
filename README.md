@@ -138,8 +138,16 @@ A quick introduction to Golang Templates can be found at [Hugo](https://gohugo.i
 
 ## How to Install
 
+### `io` Command
+
 ``` shell
-go install github.com/jojomi/io@latest
+go install github.com/jojomi/io/cmd/io@latest
+```
+
+### `github.com/jojomi/io` Library
+
+``` shell
+go get -u github.com/jojomi/io
 ```
 
 ## Who uses it?
