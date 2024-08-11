@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/iancoleman/strcase"
-	"github.com/jojomi/io"
+	jio "github.com/jojomi/io"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -38,7 +38,7 @@ func handleRootCmd(cmd *cobra.Command, args []string) {
 }
 
 func handleRoot(env EnvRoot) {
-	opts := io.IOOpts{
+	opts := jio.IOOpts{
 		Input:            env.Input,
 		Overwrites:       env.Overwrites,
 		TemplateFilename: env.TemplateFilename,
@@ -49,7 +49,7 @@ func handleRoot(env EnvRoot) {
 		AllowIO:          env.AllowIO,
 	}
 	_ = opts
-	err := io.RenderFile(opts)
+	err := jio.RenderFile(opts)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to render")
 	}
