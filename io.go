@@ -174,30 +174,31 @@ func getHTMLFuncMap(opts IOOpts) htmlTemplate.FuncMap {
 
 func getTxtFuncMap(opts IOOpts) template.FuncMap {
 	maps := []template.FuncMap{
-		tplfuncs.GolangHelpers(),
-		tplfuncs.LoopHelpers(),
+		tplfuncs.AssertHelpers(),
+		tplfuncs.CastHelpers(),
+		tplfuncs.ContainerHelpers(),
+		tplfuncs.DateHelpers(),
 		tplfuncs.DefaultHelpers(),
 		tplfuncs.EncodeHelpers(),
-		tplfuncs.DateHelpers(),
-		tplfuncs.CastHelpers(),
-		tplfuncs.SpacingHelpers(),
-		tplfuncs.PrintHelpers(),
-		tplfuncs.ContainerHelpers(),
-		tplfuncs.StringHelpers(),
-		tplfuncs.MathHelpers(),
-		tplfuncs.JSONHelpers(),
-		tplfuncs.LinesHelpers(),
-		tplfuncs.LanguageHelpers(),
-		tplfuncs.RandomHelpers(),
+		tplfuncs.GolangHelpers(),
 		tplfuncs.HashHelpers(),
+		tplfuncs.JSONHelpers(),
+		tplfuncs.LanguageHelpers(),
+		tplfuncs.LinesHelpers(),
+		tplfuncs.LoopHelpers(),
+		tplfuncs.MathHelpers(),
+		tplfuncs.PrintHelpers(),
+		tplfuncs.RandomHelpers(),
 		tplfuncs.SemverHelpers(),
+		tplfuncs.SpacingHelpers(),
+		tplfuncs.StringHelpers(),
 		tplfuncs.YAMLHelpers(),
 	}
 	if opts.AllowExec {
-		maps = append(maps, tplfuncs.ExecHelpers())
+		maps = append(maps, tplfuncs.ExecHelpers(), tplfuncs.Exec2Helpers())
 	}
 	if opts.AllowIO || opts.AllowExec {
-		maps = append(maps, tplfuncs.IOHelpers(), tplfuncs.EnvHelpers(), tplfuncs.FilesystemHelpers())
+		maps = append(maps, tplfuncs.IOHelpers(), tplfuncs.EnvHelpers(), tplfuncs.FilesystemHelpers(), tplfuncs.Filesystem2Helpers())
 	}
 	if opts.AllowNetwork || opts.AllowExec {
 		maps = append(maps, tplfuncs.NetworkHelpers())
