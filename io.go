@@ -216,6 +216,10 @@ func getTxtFuncMap(opts IOOpts) template.FuncMap {
 		)
 	}
 
+	if opts.CustomFuncMap != nil {
+		maps = append(maps, *opts.CustomFuncMap)
+	}
+
 	result := tplfuncs.MakeFuncMap(maps...)
 
 	// io aware include function (with same data)

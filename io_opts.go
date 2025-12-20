@@ -1,5 +1,7 @@
 package io
 
+import "text/template"
+
 // IOOpts encapsulates the options for IO.
 type IOOpts struct {
 	Input            string
@@ -10,4 +12,5 @@ type IOOpts struct {
 	AllowExec        bool
 	AllowNetwork     bool
 	AllowIO          bool
+	CustomFuncMap    *template.FuncMap
 }
