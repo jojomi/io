@@ -1,13 +1,13 @@
 module github.com/jojomi/io
 
-go 1.22
+go 1.24.0
 
 require (
 	github.com/jojomi/strtpl v0.4.4
-	github.com/jojomi/tplfuncs v0.19.0
+	github.com/jojomi/tplfuncs v0.23.0
 	github.com/json-iterator/go v1.1.12
 	github.com/juju/errors v1.0.0
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	github.com/tidwall/sjson v1.2.5
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -19,7 +19,7 @@ require (
 	github.com/cloudfoundry-attic/jibber_jabber v0.0.0-20151120183258-bcc4c8345a21 // indirect
 	github.com/hexops/gotextdiff v1.0.3 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
-	github.com/jojomi/gofs v0.0.0-20250302111109-25f6686b03b5 // indirect
+	github.com/jojomi/gofs v0.0.0-20250322032013-5ddaa059d4d7 // indirect
 	github.com/jojomi/gorun v0.0.0-20240321022359-dc1dd00914be // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -31,11 +31,12 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/sanity-io/litter v1.5.8 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
-	github.com/spf13/afero v1.12.0 // indirect
-	github.com/spf13/cast v1.7.1 // indirect
+	github.com/spf13/afero v1.15.0 // indirect
+	github.com/spf13/cast v1.10.0 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
-	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
+	golang.org/x/text v0.33.0 // indirect
 )
