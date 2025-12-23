@@ -1,6 +1,9 @@
 package main
 
 import (
+	"path"
+	"strings"
+
 	"github.com/iancoleman/strcase"
 	jio "github.com/jojomi/io"
 	"github.com/rs/zerolog/log"
@@ -38,8 +41,27 @@ func handleRootCmd(cmd *cobra.Command, args []string) {
 }
 
 func handleRoot(env EnvRoot) {
+	var (
+		data       any = nil
+		dataString string
+		dataFile   string
+	)
+
+	switch strings.ToLower(path.Ext(env.Input)) {
+	case ".yml":
+		fallthrough
+	case ".yaml":
+		fallthrough
+	case ".json":
+		fallthrough
+	case ".csv":
+		dataFile = env.Input
+	}
+
 	opts := jio.IOOpts{
-		Input:            env.Input,
+		Data:             data,
+		DataString:       dataString,
+		DataFile:         dataFile,
 		Overwrites:       env.Overwrites,
 		TemplateFilename: env.TemplateFilename,
 		TemplateInline:   env.TemplateInline,

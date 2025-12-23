@@ -11,6 +11,7 @@ import (
 
 	"github.com/jojomi/tplfuncs"
 	"github.com/juju/errors"
+	"gopkg.in/yaml.v3"
 
 	"github.com/jojomi/io/input"
 	"github.com/jojomi/strtpl"
@@ -45,9 +46,9 @@ func RenderString(opts IOOpts) (string, error) {
 // generateOutput generates the output content using the environment given. This is the workhorse inside io.
 // It returns the inputData used and the template output bytes plus the error if one occurred.
 func generateOutput(opts IOOpts) (interface{}, []byte, error) {
-	inputData, err := getDataFromInput(opts)
+	inputData, err := getData(opts)
 	if err != nil {
-		return nil, nil, errors.Annotatef(err, "failed to parse input %s", opts.Input)
+		return nil, nil, errors.Annotatef(err, "failed to parse input")
 	}
 
 	templateContent, err := getTemplateContent(opts, inputData)
@@ -79,7 +80,7 @@ func generateOutputForTemplate(opts IOOpts, inputData interface{}, templateData 
 		}
 		err = json.Unmarshal(jsonBytes, &inputData)
 		if err != nil {
-			return nil, nil, errors.Annotatef(err, "failed to re-unmarshal input %s", opts.Input)
+			return nil, nil, errors.Annotatef(err, "failed to re-unmarshal input")
 		}
 	}
 
@@ -90,14 +91,55 @@ func generateOutputForTemplate(opts IOOpts, inputData interface{}, templateData 
 	return inputData, outputData, nil
 }
 
-func getDataFromInput(opts IOOpts) (interface{}, error) {
+func getData(opts IOOpts) (interface{}, error) {
+	// data directly available?
+	if opts.Data != nil {
+		return opts.Data, nil
+	}
+
+	// as a string (JSON or YAML)
+	if opts.DataString != "" {
+		var data map[string]interface{}
+		if strings.HasPrefix(opts.DataString, "{") {
+			err := json.Unmarshal([]byte(opts.DataString), &data)
+			if err != nil {
+				return nil, fmt.Errorf("invalid inline json: %s", opts.DataString)
+			}
+			return data, nil
+		} else {
+			err := yaml.Unmarshal([]byte(opts.DataString), &data)
+			if err != nil {
+				return nil, fmt.Errorf("invalid inline yaml: %s", opts.DataString)
+			}
+			return data, nil
+		}
+	}
+
+	// file
 	var (
 		data interface{}
 		err  error
 	)
 
+	switch strings.ToLower(path.Ext(opts.DataFile)) {
+	case ".yml":
+		fallthrough
+	case ".yaml":
+		data, err = input.GetYamlFromFile(opts.DataFile)
+	case ".json":
+		data, err = input.GetJSONFromFile(opts.DataFile)
+	case ".csv":
+		data, err = input.GetCSVFromFile(opts.DataFile)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+
 	// inline JSON?
-	if len(opts.Input) > 0 && opts.Input[0:1] == "{" {
+	/*if len(opts.Input) > 0 && opts.Input[0:1] == "{" {
 		var data map[string]interface{}
 		err := json.Unmarshal([]byte(opts.Input), &data)
 		if err != nil {
@@ -121,7 +163,7 @@ func getDataFromInput(opts IOOpts) (interface{}, error) {
 		return nil, err
 	}
 
-	return data, nil
+	return data, nil*/
 }
 
 func isHTML(opts IOOpts) bool {
@@ -224,9 +266,9 @@ func getTxtFuncMap(opts IOOpts) template.FuncMap {
 
 	// io aware include function (with same data)
 	inlineTemplateFunc := func(filename string) (string, error) {
-		inputData, err := getDataFromInput(opts)
+		inputData, err := getData(opts)
 		if err != nil {
-			return "", errors.Annotatef(err, "failed to parse input %s", opts.Input)
+			return "", errors.Annotatef(err, "failed to parse input")
 		}
 
 		templateData, err := os.ReadFile(filename)
