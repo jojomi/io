@@ -1,7 +1,6 @@
 package main
 
 import (
-	"path"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -47,14 +46,9 @@ func handleRoot(env EnvRoot) {
 		dataFile   string
 	)
 
-	switch strings.ToLower(path.Ext(env.Input)) {
-	case ".yml":
-		fallthrough
-	case ".yaml":
-		fallthrough
-	case ".json":
-		fallthrough
-	case ".csv":
+	if strings.HasPrefix(env.Input, "{") {
+		dataString = env.Input
+	} else {
 		dataFile = env.Input
 	}
 

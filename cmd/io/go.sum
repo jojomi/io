@@ -34,8 +34,8 @@ github.com/jojomi/gofs v0.0.0-20250322032013-5ddaa059d4d7 h1:bZpuNXcri45YBOmvCgI
 github.com/jojomi/gofs v0.0.0-20250322032013-5ddaa059d4d7/go.mod h1:uaiCP4tZROLRsxvLe+rHtleBsPqr8170xPFeQQgsCO8=
 github.com/jojomi/gorun v0.0.0-20240321022359-dc1dd00914be h1:1Oqn29muLSQhhhzfJ2I19Qw+R/Rtk1krxS0w0mdrJOs=
 github.com/jojomi/gorun v0.0.0-20240321022359-dc1dd00914be/go.mod h1:1+tve56HJAbex5kzT7dxAu4mzbSWiy6Xrfc3m0TYvEU=
-github.com/jojomi/io v0.9.0 h1:vTt9nAUAlj+xmgjYAbHFupNZfYi/xnzmrEoiqYwwkEw=
-github.com/jojomi/io v0.9.0/go.mod h1:sNzZK0FK2QLneySV1RbqnHh3vb96o6tR6jS2jQYLIew=
+github.com/jojomi/io v0.10.0 h1:euQ+/m3RV9cH1asyZTGyZN9WK1AwaqERxyxCb1ggWUA=
+github.com/jojomi/io v0.10.0/go.mod h1:sNzZK0FK2QLneySV1RbqnHh3vb96o6tR6jS2jQYLIew=
 github.com/jojomi/strtpl v0.4.4 h1:Cu2tbmRleabxNcYaUUhnombfPZy+A4WEQ4LjiZJeYlg=
 github.com/jojomi/strtpl v0.4.4/go.mod h1:lZtlkKR4eF0/IO4ScBHoyc8231nbH7NVOsXgMAilKmQ=
 github.com/jojomi/tplfuncs v0.22.0 h1:asDLBA7M94qCBWfLWaS1z7wRw/OzFXC0aaHZskl9PrY=

@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/iancoleman/strcase v0.3.0
-	github.com/jojomi/io v0.9.0
+	github.com/jojomi/io v0.10.0
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
